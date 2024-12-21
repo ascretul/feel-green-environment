@@ -1,0 +1,62 @@
+services:
+  a_backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: a_backend
+    ports:
+      - "81:81" # http://localhost:81
+    volumes:
+      - ../backend:/var/www/html
+    depends_on:
+      - a_db
+    networks:
+      - app-network
+
+  a_nginx:
+    build:
+      context: ../nginx
+      dockerfile: Dockerfile
+    container_name: a_nginx
+    ports:
+      - "8000:81"
+    volumes:
+      - ../backend:/var/www/html
+    depends_on:
+      - a_backend
+    networks:
+      - app-network
+
+  a_db:
+    image: mysql:8.0
+    container_name: a_db
+    ports:
+      - "3308:3308"
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - ../mysql:/var/lib/mysql
+    networks:
+      - app-network
+
+  a_frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: a_frontend
+    volumes:
+      - ../frontend:/var/www/html
+    ports:
+      - "4200:4200" # http://localhost:4200
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge

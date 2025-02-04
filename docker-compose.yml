@@ -31,7 +31,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: laravel
+      MYSQL_DATABASE: feel-green
       MYSQL_USER: admin
       MYSQL_PASSWORD: secret
     volumes:
